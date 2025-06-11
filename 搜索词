@@ -1,0 +1,1647 @@
+===============================================================================
+
+FILE: C:\Users\Adam\Desktop\搜索词报告优化工具V1.10.2.xlsm
+
+Type: OpenXML
+
+WARNING  For now, VBA stomping cannot be detected for files in memory
+
+-------------------------------------------------------------------------------
+
+VBA MACRO ThisWorkbook.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/ThisWorkbook'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet5.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet5'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet2.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet2'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet3.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet3'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet4.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet4'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+
+
+
+    If Target.Address = "$G$1" Then
+
+
+
+        Call StringAnalysis
+
+
+
+    End If
+
+
+
+    If Target.Address = "$H$1" Then
+
+
+
+        Call reset
+
+
+
+    End If
+
+
+
+End Sub
+
+
+
+-------------------------------------------------------------------------------
+
+VBA MACRO STOptiAdvice.vba
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/STOptiAdvice'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Sub StringAnalysis()
+
+
+
+    Dim currentDate, validDate As Date
+
+    currentDate = Now()
+
+    validDate = "2026-02-28 23:59:59"
+
+    If currentDate > validDate Then
+
+        MsgBox "Expired tool, please contact us." & vbCrLf _
+
+            & vbCrLf _
+
+            & "Amazon Official Website: https://gs.amazon.cn/service/education" & vbCrLf _
+
+            & vbCrLf _
+
+            & "Developer: benshz@amazon.com +86 156 5176 6966"
+
+        End
+
+    End If
+
+
+
+    'double confirm
+
+    If MsgBox("Click [Yes] to run the tool and click [No] to cancel." & vbCrLf _
+
+        & vbCrLf _
+
+        & "[DECLARATION]" & vbCrLf _
+
+        & "The result generated from this tool works only as a reference and does not represent Amazon's commitment or predicted actual results." & vbCrLf _
+
+        & vbCrLf _
+
+        & "Find more tools and courses: " & vbCrLf & "https://gs.amazon.cn/service/education.(Amazon Official Website)" & vbCrLf _
+
+        & vbCrLf _
+
+        & "Developer: benshz@amazon.com", vbYesNo, "DECLARATION") = vbNo Then Exit Sub
+
+
+
+    'setting check
+
+    For Each eachSettingCell In Sheets("Setting").Range("B2:B7")
+
+        If eachSettingCell.Value = "-" Then
+
+            MsgBox "Please set the numbers in 'Setting' sheet and then restart."
+
+            End
+
+        End If
+
+    Next eachSettingCell
+
+
+
+    'row & column count
+
+    ReportRowCount = Sheets("ST_Report").Range("A1").CurrentRegion.Rows.Count
+
+    ReportColumnCount = Sheets("ST_Report").Range("A1").CurrentRegion.Columns.Count
+
+    WordsRowCount = Sheets("Split_Words").Range("A1").CurrentRegion.Rows.Count
+
+    WordsColumnCount = Sheets("Split_Words").Range("A1").CurrentRegion.Columns.Count
+
+    Sheets("Opti_Advice").Range("B1").Value = ReportRowCount - 1
+
+    Sheets("Opti_Advice").Range("D1").Value = ReportColumnCount - 1
+
+
+
+    'if report data is correct and record data column number
+
+    Dim reportSTColumnNumber As Integer
+
+    Dim reportImprColumnNumber As Integer
+
+    Dim reportClicksColumnNumber As Integer
+
+    Dim reportSpendColumnNumber As Integer
+
+    Dim reportSalesColumnNumber As Integer
+
+    Dim reportOrdersColumnNumber As Integer
+
+    Dim reportCheckNumber As Integer
+
+    reportCheckNumber = 0
+
+    For reportTitleColumn = 1 To ReportColumnCount
+
+        Dim tempReportTitle As String
+
+        tempReportTitle = Sheets("ST_Report").Cells(1, reportTitleColumn)
+
+
+
+        'replace problem JP characters
+
+        tempReportTitle = Replace(tempReportTitle, "ド", "")
+
+        tempReportTitle = Replace(tempReportTitle, "プ", "")
+
+
+
+        If InStr(1, tempReportTitle, "Customer Search Term", vbTextCompare) > 0 _
+
+            Or InStr(1, tempReportTitle, "客户搜索词", vbTextCompare) > 0 _
+
+            Or InStr(1, tempReportTitle, "Suchbegriff des Kunden", vbTextCompare) > 0 _
+
+            Or InStr(1, tempReportTitle, "Término de búsqueda de cliente", vbTextCompare) > 0 _
+
+            Or InStr(1, tempReportTitle, "カスタマーの検索キーワー", vbTextCompare) > 0 Then
+
+            reportSTColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+        If Trim(tempReportTitle) = "Impressions" _
+
+            Or Trim(tempReportTitle) = "展示量" _
+
+            Or Trim(tempReportTitle) = "展现量" _
+
+            Or Trim(tempReportTitle) = "Impressionen" _
+
+            Or Trim(tempReportTitle) = "Impresiones" _
+
+            Or Trim(tempReportTitle) = "インレッション" Then
+
+            reportImprColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+        If Trim(tempReportTitle) = "Clicks" _
+
+            Or Trim(tempReportTitle) = "点击量" _
+
+            Or Trim(tempReportTitle) = "Klicks" _
+
+            Or Trim(tempReportTitle) = "Clics" _
+
+            Or Trim(tempReportTitle) = "クリック" Then
+
+            reportClicksColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+        If Trim(tempReportTitle) = "Spend" _
+
+            Or Trim(tempReportTitle) = "花费" _
+
+            Or Trim(tempReportTitle) = "Ausgaben" _
+
+            Or Trim(tempReportTitle) = "Gasto" _
+
+            Or Trim(tempReportTitle) = "広告費" Then
+
+            reportSpendColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+        If InStr(1, tempReportTitle, "Total Sales", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "7天总销售额", 1) _
+
+            Or InStr(1, tempReportTitle, "14天总销售额", 1) _
+
+            Or InStr(1, tempReportTitle, "7 Tage, Umsatz gesamt", 1) _
+
+            Or InStr(1, tempReportTitle, "14 Tage, Umsatz gesamt", 1) _
+
+            Or InStr(1, tempReportTitle, "Ventas totales de 7 días", 1) _
+
+            Or InStr(1, tempReportTitle, "Ventas totales de 14 días", 1) _
+
+            Or InStr(1, tempReportTitle, "総売上高", 1) Then
+
+            reportSalesColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+        If InStr(1, tempReportTitle, "Total Orders", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "总订单数", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "7 Tage, Auftr" & ChrW(228) & "ge gesamt", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "14 Tage Bestellungen insgesamt", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "Pedidos totales de 7 días", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "Pedidos totales a 14 días", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "合計注文数", 1) > 0 _
+
+            Or InStr(1, tempReportTitle, "総注文", 1) > 0 Then
+
+            reportOrdersColumnNumber = reportTitleColumn
+
+            reportCheckNumber = reportCheckNumber + 1
+
+        End If
+
+    Next reportTitleColumn
+
+    If reportCheckNumber < 6 Then
+
+        MsgBox "Invalid ST Report Data, please check." & vbCrLf & "Report must include these columns: Customer Search Term, Impressions, Clicks, Total Sales, Total Orders."
+
+        End
+
+    End If
+
+
+
+    'if Split words data is correct
+
+    Dim wordSTColumnNumber As Integer
+
+    Dim wordImprColumnNumber As Integer
+
+    Dim wordClicksColumnNumber As Integer
+
+    Dim wordSpendColumnNumber As Integer
+
+    Dim wordSalesColumnNumber As Integer
+
+    Dim wordOrdersColumnNumber As Integer
+
+    Dim wordCheckNumber As Integer
+
+    wordCheckNumber = 0
+
+    For wordTitleColumn = 1 To WordsColumnCount
+
+        Dim tempWordTitle As String
+
+        tempWordTitle = Sheets("Split_Words").Cells(1, wordTitleColumn)
+
+
+
+        'replace problem JP characters
+
+        tempWordTitle = Replace(tempWordTitle, "ド", "")
+
+        tempWordTitle = Replace(tempWordTitle, "プ", "")
+
+
+
+        If InStr(1, tempWordTitle, "Customer Search Term", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "客户搜索词", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "Suchbegriff des Kunden", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "Término de búsqueda de cliente", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "カスタマーの検索キーワー", 1) > 0 Then
+
+            wordSTColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+        If Trim(tempWordTitle) = "Impressions" _
+
+            Or Trim(tempWordTitle) = "展示量" _
+
+            Or Trim(tempWordTitle) = "展现量" _
+
+            Or Trim(tempWordTitle) = "Impressionen" _
+
+            Or Trim(tempWordTitle) = "Impresiones" _
+
+            Or Trim(tempWordTitle) = "インレッション" Then
+
+            wordImprColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+        If Trim(tempWordTitle) = "Clicks" _
+
+            Or Trim(tempWordTitle) = "点击量" _
+
+            Or Trim(tempWordTitle) = "Klicks" _
+
+            Or Trim(tempWordTitle) = "Clics" _
+
+            Or Trim(tempWordTitle) = "クリック" Then
+
+            wordClicksColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+        If Trim(tempWordTitle) = "Spend" _
+
+            Or Trim(tempWordTitle) = "花费" _
+
+            Or Trim(tempWordTitle) = "Ausgaben" _
+
+            Or Trim(tempWordTitle) = "Gasto" _
+
+            Or Trim(tempWordTitle) = "広告費" Then
+
+            wordSpendColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+        If InStr(1, tempWordTitle, "Total Sales", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "7天总销售额", 1) _
+
+            Or InStr(1, tempWordTitle, "14天总销售额", 1) _
+
+            Or InStr(1, tempWordTitle, "7 Tage, Umsatz gesamt", 1) _
+
+            Or InStr(1, tempWordTitle, "14 Tage, Umsatz gesamt", 1) _
+
+            Or InStr(1, tempWordTitle, "Ventas totales de 7 días", 1) _
+
+            Or InStr(1, tempWordTitle, "Ventas totales de 14 días", 1) _
+
+            Or InStr(1, tempWordTitle, "総売上高", 1) Then
+
+            wordSalesColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+        If InStr(1, tempWordTitle, "Total Orders", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "总订单数", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "7 Tage, Auftr" & ChrW(228) & "ge gesamt", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "14 Tage Bestellungen insgesamt", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "Pedidos totales de 7 días", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "Pedidos totales a 14 días", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "合計注文数", 1) > 0 _
+
+            Or InStr(1, tempWordTitle, "総注文", 1) > 0 Then
+
+            wordOrdersColumnNumber = wordTitleColumn
+
+            wordCheckNumber = wordCheckNumber + 1
+
+        End If
+
+    Next wordTitleColumn
+
+    If wordCheckNumber < 6 Then
+
+        MsgBox "Invalid Split Words Data, please check." & vbCrLf & "word must include these columns: Customer Search Term, Impressions, Clicks, Spend, Total Sales, Total Orders."
+
+        End
+
+    End If
+
+
+
+    'static metrics calculation
+
+    Dim totalClicks As Long
+
+    totalClicks = 0
+
+    For tempClickRow = 2 To ReportRowCount
+
+        totalClicks = totalClicks + Sheets("ST_Report").Cells(tempClickRow, reportClicksColumnNumber).Value
+
+    Next tempClickRow
+
+
+
+    Dim totalOrders As Long
+
+    totalOrders = 0
+
+    For tempOrderRow = 2 To ReportRowCount
+
+        totalOrders = totalOrders + Sheets("ST_Report").Cells(tempOrderRow, reportOrdersColumnNumber).Value
+
+    Next tempOrderRow
+
+
+
+    Dim totalSpend As Double
+
+    totalSpend = 0
+
+    For tempSpendRow = 2 To ReportRowCount
+
+        totalSpend = totalSpend + Sheets("ST_Report").Cells(tempSpendRow, reportSpendColumnNumber).Value
+
+    Next tempSpendRow
+
+
+
+    Dim totalSales As Double
+
+    totalSales = 0
+
+    For tempSalesRow = 2 To ReportRowCount
+
+        totalSales = totalSales + Sheets("ST_Report").Cells(tempSalesRow, reportSalesColumnNumber).Value
+
+    Next tempSalesRow
+
+
+
+    Dim totalConversion As Double
+
+    totalConversion = -1
+
+    If totalClicks > 0 Then
+
+        totalConversion = totalOrders / totalClicks
+
+    End If
+
+
+
+    Dim totalAcos As Double
+
+    totalAcos = -1
+
+    If totalSales > 0 Then
+
+        totalAcos = totalSpend / totalSales
+
+    End If
+
+
+
+    Dim totalASP As Double
+
+    totalASP = -1
+
+    If totalOrders > 0 Then
+
+        totalASP = totalSales / totalOrders
+
+    End If
+
+
+
+    If totalConversion < 0 Or totalAcos < 0 Or totalASP < 0 Then
+
+        MsgBox "Invalid ST Report Data, please check." & vbCrLf & "Report must include positive total clicks, orders and sales."
+
+        End
+
+    End If
+
+
+
+    'benchmark level calculation
+
+    Dim targetAcos As Double
+
+    targetAcos = Application.WorksheetFunction.Max(0.2, totalAcos / Sheets("Setting").Cells(2, 2).Value)
+
+    Dim exactNegativeLv As Double
+
+    exactNegativeLv = Application.WorksheetFunction.Max(5, Sheets("Setting").Cells(3, 2).Value / totalConversion, 0)
+
+    Dim phraseNegativeLv As Double
+
+    phraseNegativeLv = Application.WorksheetFunction.Max(50, Sheets("Setting").Cells(4, 2).Value / totalConversion, 0)
+
+    Dim reliability As Double
+
+    reliability = Application.WorksheetFunction.Max(5, Sheets("Setting").Cells(5, 2).Value / totalConversion)
+
+    Dim increaseBidLv As Double
+
+    increaseBidLv = Sheets("Setting").Cells(6, 2).Value * targetAcos
+
+    Dim decreaseBidLv As Double
+
+    decreaseBidLv = Sheets("Setting").Cells(7, 2).Value * targetAcos
+
+
+
+    'reset result sheet
+
+    Sheets("Opti_Advice").Select
+
+    Sheets("Opti_Advice").Range("A1").Select
+
+    Sheets("Opti_Advice").Range("B1").Value = "Working"
+
+    Sheets("Opti_Advice").Range("B1").Font.Color = RGB(112, 48, 160)
+
+    Sheets("Opti_Advice").Range("D1").Value = "-"
+
+    Sheets("Opti_Advice").Range("E1").Value = "Time_Remaining: "
+
+    Sheets("Opti_Advice").Range("F1").Value = "Pending_Start"
+
+    tempRowCheckCount = Sheets("Opti_Advice").Range("A2").CurrentRegion.Rows.Count
+
+    tempColumnCheckCount = Sheets("Opti_Advice").Range("A2").CurrentRegion.Columns.Count
+
+    If tempColumnCheckCount > 0 Then
+
+        Sheets("Opti_Advice").Range(Cells(2, 1), Cells(2, tempColumnCheckCount)).Clear
+
+    End If
+
+    If tempRowCheckCount > 0 Then
+
+        Sheets("Opti_Advice").Range(Cells(2, 1), Cells(tempRowCheckCount, tempColumnCheckCount)).Clear
+
+    End If
+
+    For i = 1 To ReportColumnCount
+
+        Sheets("Opti_Advice").Cells(2, i) = Sheets("ST_Report").Cells(1, i)
+
+    Next i
+
+
+
+    'public static cons
+
+    Sheets("Split_Words").Select
+
+    Sheets("Split_Words").Range("A1").Select
+
+    Sheets("Split_Words").Range(Cells(1, wordSTColumnNumber), Cells(WordsRowCount, wordSTColumnNumber)).NumberFormat = "@"
+
+    Sheets("Opti_Advice").Select
+
+    Sheets("Opti_Advice").Range("A1").Select
+
+    startTime = Time
+
+    titlePending = "Pending"
+
+    textPendingZeroClick = "Some word(s) has 0 click number. Advice review by relevance."
+
+    textPendingNotEnoughClick = "Some word(s) has too few clicks. Advice review by relevance."
+
+    textPendingNoNegativeZeroOrder = "Some word(s) has 0 conversion rate but has not enough clicks to advice negative action. Advicing exact negative needs > " & Format(exactNegativeLv, "0.00") & " clicks."
+
+    textPendingZeroClickSearchTerm = "All word(s) has conversion but this search term does not have spend/click, advice review by reasonable CPC."
+
+    titleReasonable = "Reasonable"
+
+    textPendingNotAdviceChange = "This search term has reasonable data, advice not to change."
+
+    titleExactNegative = "Exact_Negative"
+
+    textExactNegative = "Some word(s) has certain click number but no conversion."
+
+    titlePhraseNegative = "Phrase_Negative"
+
+    textPhraseNegative = "Some word(s) has lots of clicks but no conversion."
+
+    titleIncreaseBid = "Increase_Bid"
+
+    textIncreaseBid = "EST ST has better performance than other targetings. If necessary, advice increase Bid for more traffic and conversion."
+
+    titleDecreaseBid = "Decrease_Bid"
+
+    textDecreaseBid = "EST ST has worse performance than other targetings. If necessary, advice decrease bid for better total conversion rate and margin."
+
+
+
+    'start read ST report line
+
+    For currentSTReportRow = 1 To ReportRowCount
+
+
+
+        'copy line to result sheet
+
+        Sheets("Opti_Advice").Range(Cells(2, reportSTColumnNumber), Cells(ReportRowCount + 1, reportSTColumnNumber)).NumberFormatLocal = "@"
+
+        For currentSTReportLineColumn = 1 To ReportColumnCount
+
+            Sheets("Opti_Advice").Cells(currentSTReportRow + 1, currentSTReportLineColumn).Value = Sheets("ST_Report").Cells(currentSTReportRow, currentSTReportLineColumn).Value
+
+        Next currentSTReportLineColumn
+
+
+
+        'if data line, start analysis
+
+        If currentSTReportRow > 1 Then
+
+            'MsgBox "line: " & currentSTReportRow
+
+            'check if 0 order search term
+
+            Dim ifZeroClickSearchTerm As Boolean
+
+            ifZeroClickSearchTerm = False
+
+            Dim zeroClickSearchTerm As String
+
+            zeroClickSearchTerm = ""
+
+            If Sheets("ST_Report").Cells(currentSTReportRow, reportClicksColumnNumber).Value < 0.01 Then
+
+                ifZeroClickSearchTerm = True
+
+                zeroClickSearchTerm = Sheets("ST_Report").Cells(currentSTReportRow, reportSTColumnNumber).Value
+
+            End If
+
+            'advice title and text dim
+
+            Dim adviceTitle As String
+
+            Dim adviceText As String
+
+            Dim confidenceData As String
+
+            Dim confidenceText As String
+
+            'split word
+
+            Dim wordST, wordsST
+
+            wordST = Sheets("ST_Report").Cells(currentSTReportRow, reportSTColumnNumber).Value
+
+            'find Non-decimal . (full stop)
+
+            Dim tempStopWord As String
+
+            tempStopWord = ""
+
+            Dim allMatches As Object
+
+            Dim regFindStop As Object
+
+            Set regFindStop = CreateObject("VBScript.RegExp")
+
+            With regFindStop
+
+                .Global = True
+
+                .Pattern = "\.\D|\.$"
+
+                If .test(wordST) Then
+
+                    Set allMatches = regFindStop.Execute(wordST)
+
+                    Dim tempIndex, currentIndex As Integer
+
+                    tempIndex = 1
+
+                    For Each tempPart In allMatches
+
+                        currentIndex = tempPart.FirstIndex
+
+                        tempStopWord = tempStopWord & " " & Mid(wordST, tempIndex, currentIndex - tempIndex + 1)
+
+                        tempIndex = currentIndex + 2
+
+                    Next tempPart
+
+                    wordST = tempStopWord
+
+                End If
+
+            End With
+
+            'replace spiliters
+
+            Dim reg As Object
+
+            Set reg = CreateObject("VBScript.RegExp")
+
+            With reg
+
+                .Global = True
+
+                .Pattern = "\\|`|~|\-|_|=|\+|\{|\}|\||\'|""|\]|\[|,|/|<|>|\?|;|:|!|@|#|\$|%|\^|&|\*|\(|\)|(かしら)|(までに)|(くらい)|(ぐらい)|(だって)|(ばかり)|(である)|(そうだ)|(ようだ)|(でおく)|(ねえ)|(なあ)|(とも)|(から)|(の 
+
+に)|(ので)|(きり)|(より)|(まで)|(ほど)|(だけ)|(でも)|(さえ)|(こそ)|(しか)|(など)|(なり)|(やら)|(ずつ)|(とか)|(たら)|(なら)|(ない)|(ぬん)|(です)|(ごろ)|(たい)|(は)|(も)|(が)|(を)|(か)|(よ)|(な)|(ぞ)|(ぜ)|(わ)|(さ)|(て)|(と)|(で)|(に)|(へ)|(や)|(の)|(し)|(ば)|(ね)|(だ)|(た)|(ありません)|(ください)|(あります)|(によって)|(けれども)|(として)|(または)|(により)|(くせに)|(たって)|(ながら)|(ある)|(けど)|(では)|(には)|(たり)|(すら)|(なし)|(ご)"
+
+                If .test(wordST) Then
+
+                    wordST = reg.Replace(wordST, " ")
+
+                End If
+
+                wordsST = Split(wordST, " ")
+
+            End With
+
+            'query data list
+
+            Dim dataList()
+
+            ReDim dataList(1 To UBound(wordsST) + 1, 1 To 2)
+
+            Dim ifReliable As Boolean
+
+            ifReliable = True
+
+            Dim ifExistZeroWord As Boolean
+
+            ifExistZeroWord = False
+
+            Dim ifExistZeroClickWord As Boolean
+
+            ifExistZeroClickWord = False
+
+            Dim minWordClick As Long
+
+            minWordClick = -1
+
+            Dim maxWordZeroClick As Long
+
+            maxWordZeroClick = -1
+
+            Dim noNegativeZeroOrderWordMaxClick As Long
+
+            noNegativeZeroOrderWordMaxClick = -1
+
+            Dim notEnoughClickWordMaxClick As Long
+
+            notEnoughClickWordMaxClick = -1
+
+            Dim negativeKeyword As String
+
+            negativeKeyword = ""
+
+            Dim minClickKeyword As String
+
+            minClickKeyword = ""
+
+            Dim noNegatvieZeroOrderKeyword As String
+
+            noNegatvieZeroOrderKeyword = ""
+
+            Dim notEnoughClickWord As String
+
+            notEnoughClickWord = ""
+
+            'Dim totalWordClick As Long
+
+            'totalWordClick = 0
+
+            Dim wordLocation As Integer
+
+            wordLocation = 0
+
+            Dim tempSTWordNumber As Integer
+
+            tempSTWordNumber = 1
+
+            For Each tempword In wordsST
+
+                If Len(tempword) < 1 Then
+
+                    GoTo NextWord
+
+                End If
+
+                wordLocation = wordLocation + 1
+
+                'format to @
+
+                Dim eachExistingText As String
+
+                eachExistingText = "" & Format(tempword, "@")
+
+                'If Mid(tempword, 1, 1) = "'" Then
+
+                'eachExistingText = "'" + Format(tempword, "@")
+
+                'Else
+
+                'eachExistingText = Format(tempword, "@")
+
+                'End If
+
+                'query single word data
+
+                Dim ifFoundSplitWord As Boolean
+
+                ifFoundSplitWord = False
+
+                Sheets("Split_Words").Select
+
+                Sheets("Split_Words").Range("A1").Select
+
+                For Each tempWordCell In Sheets("Split_Words").Range(Cells(2, wordSTColumnNumber), Cells(WordsRowCount, wordSTColumnNumber))
+
+                    If tempWordCell.Value = eachExistingText Then
+
+                        ifFoundSplitWord = True
+
+                        If Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value > 0 Then
+
+                            dataList(tempSTWordNumber, 1) = Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value
+
+                            dataList(tempSTWordNumber, 2) = Sheets("Split_Words").Cells(tempWordCell.Row, wordOrdersColumnNumber).Value / Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value
+
+                            'totalWordClick = totalWordClick + Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value
+
+                            'boolean value redim
+
+                            If minWordClick < 0 Then
+
+                                minWordClick = Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value
+
+                                minClickKeyword = eachExistingText
+
+                            Else
+
+                                minWordClick = Application.WorksheetFunction.Min(minWordClick, Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value)
+
+                                If minWordClick = Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value Then
+
+                                    minClickKeyword = eachExistingText
+
+                                End If
+
+                            End If
+
+                            If Sheets("Split_Words").Cells(tempWordCell.Row, wordOrdersColumnNumber).Value = 0 And Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value > exactNegativeLv Then
+
+                                ifExistZeroWord = True
+
+                                maxWordZeroClick = Application.WorksheetFunction.Max(maxWordZeroClick, Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value)
+
+                                If maxWordZeroClick = Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value Then
+
+                                    negativeKeyword = eachExistingText
+
+                                End If
+
+                            End If
+
+                            If Sheets("Split_Words").Cells(tempWordCell.Row, wordOrdersColumnNumber).Value = 0 And ifExistZeroWord = False And Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value > reliability Then
+
+                                noNegativeZeroOrderWordMaxClick = Application.WorksheetFunction.Max(noNegativeZeroOrderWordMaxClick, Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value)
+
+                                If noNegativeZeroOrderWordMaxClick = Sheets("Split_Words").Cells(tempWordCell.Row, wordClicksColumnNumber).Value Then
+
+                                    noNegatvieZeroOrderKeyword = eachExistingText
+
+                                End If
+
+                            End If
+
+                            If ifReliable = True And minWordClick < reliability Then
+
+                                ifReliable = False
+
+                                notEnoughClickWord = eachExistingText
+
+                                notEnoughClickWordMaxClick = minWordClick
+
+                            End If
+
+                        Else
+
+                            '0 click data result
+
+                            ifExistZeroClickWord = True
+
+                            adviceTitle = titlePending
+
+                            adviceText = textPendingZeroClick & " Zero Click Keyword: " & eachExistingText
+
+                            confidenceData = "-"
+
+                            confidenceText = "No valid data to make a suggeston."
+
+                        End If
+
+                    End If
+
+                    If ifFoundSplitWord = True Then
+
+                        Exit For
+
+                    End If
+
+                Next tempWordCell
+
+                If ifFoundSplitWord = False Then
+
+                    MsgBox "Can not find split word '" & eachExistingText & "' in Split_Words sheet from ST_Report line: " & currentSTReportRow & "."
+
+                    End
+
+                End If
+
+                tempSTWordNumber = tempSTWordNumber + 1
+
+NextWord:                                                                                                                                                                                            Next tempword
+
+                'calculate final advice
+
+                Sheets("Opti_Advice").Select
+
+                Sheets("Opti_Advice").Range("A1").Select
+
+                If ifExistZeroWord = True Then
+
+                    If maxWordZeroClick > phraseNegativeLv Then
+
+                        adviceTitle = titlePhraseNegative
+
+                        adviceText = textPhraseNegative & " Problem keyword: " & negativeKeyword & " with " & maxWordZeroClick & " clicks and 0 order."
+
+                        confidenceData = Format(1 - ((1 - totalConversion) ^ maxWordZeroClick), "0.00%")
+
+                        confidenceText = confidenceData & " confidence, this search term will not have orders in the future for having problem keyword: " & negativeKeyword & "."
+
+                    Else
+
+                        adviceTitle = titleExactNegative
+
+                        adviceText = textExactNegative & " Problem keyword: " & negativeKeyword & " with " & maxWordZeroClick & " clicks and 0 order."
+
+                        confidenceData = Format(1 - ((1 - totalConversion) ^ maxWordZeroClick), "0.00%")
+
+                        confidenceText = confidenceData & " confidence, this search term will not have orders in the future for having problem keyword: " & negativeKeyword & "."
+
+                    End If
+
+                End If
+
+                If ifExistZeroWord = False And ifExistZeroClickWord = False And ifReliable = False Then
+
+                    adviceTitle = titlePending
+
+                    adviceText = textPendingNotEnoughClick & " Limited Clicks Keyword: " & notEnoughClickWord & " with " & notEnoughClickWordMaxClick & " clicks."
+
+                    confidenceData = Format(1 - ((1 - totalConversion) ^ minWordClick), "0.00%")
+
+                    confidenceText = confidenceData & "confidence in offering optimization suggestions, even though each component word has clicks and conversions, " _
+
+                        & "the word(" & minClickKeyword & ") with the least clicks has only " & minWordClick & " clicks, therefore, no direct optimization suggestions are provided."
+
+                End If
+
+                If ifExistZeroWord = False And ifExistZeroClickWord = False And ifReliable = True Then
+
+                    'calculate ets cr
+
+                    Dim tempestCR As Double
+
+                    tempestCR = 255
+
+                    For tempWordBound = 1 To UBound(dataList, 1)
+
+                        'tempestCR = tempestCR * dataList(tempWordBound, 2) ^ (dataList(tempWordBound, 1) / totalWordClick)
+
+                        If Not (IsEmpty(dataList(tempWordBound, 2))) And tempestCR > dataList(tempWordBound, 2) Then
+
+                            tempestCR = dataList(tempWordBound, 2)
+
+                        End If
+
+                    Next tempWordBound
+
+                    estCR = tempestCR
+
+                    'calculate ets acos
+
+                    If estCR > 0 Then
+
+                        If ifZeroClickSearchTerm = False Then
+
+                            estACOS = Sheets("Opti_Advice").Cells(currentSTReportRow + 1, reportSpendColumnNumber).Value / Sheets("Opti_Advice").Cells(currentSTReportRow + 1, reportClicksColumnNumber).Value / estCR / totalASP   
+
+                        End If
+
+                        'calculate target acos
+
+                        targetCPC = targetAcos * estCR * totalASP
+
+                        If ifZeroClickSearchTerm = True Then
+
+                            adviceTitle = titlePending
+
+                            adviceText = textPendingZeroClickSearchTerm & " EST CR of this search term: " + Format(estCR, "0.00%") + " and ASP " + Format(totalASP, "0.00")
+
+                            confidenceData = Format(1 - ((1 - totalConversion) ^ minWordClick), "0.00%")
+
+                            confidenceText = confidenceData & " confidence, this search term tends to have a conversion rate of " & Format(estCR, "0.00%") & " " _
+
+                                & "when there is sufficient data. The reason is that the word with the lowest number of clicks in the composition has " & minWordClick & " clicks," _
+
+                                & " and the word with the lowest conversion rate has a conversion rate of " & Format(estCR, "0.00%") & "."
+
+                        ElseIf estACOS < increaseBidLv Then
+
+                            adviceTitle = titleIncreaseBid
+
+                            adviceText = textIncreaseBid + " CPC can be increased up to " + Format(targetCPC, "0.00") + " to reach EST ACOS: " + Format(targetAcos, "0.00%") + " on this ST with EST CR: " + Format(estCR, "0.00%") 
+
++ ", or adjust bid accordingly. Eg. CPC: " + Format(targetCPC * 0.7, "0.00") + " for ACOS " + Format(targetAcos * 0.7, "0.00%") + " & CPC:" + Format(targetCPC * 0.5, "0.00") + " for ACOS " + Format(targetAcos * 0.5, "0.00%") + " on this ST with ASP " + Format(totalASP, "0.00") + "."
+
+                            confidenceData = Format(1 - ((1 - totalConversion) ^ minWordClick), "0.00%")
+
+                            confidenceText = confidenceData & " confidence, this search term tends to have a conversion rate of " & Format(estCR, "0.00%") & " " _
+
+                                & "when there is sufficient data. The reason is that the word with the lowest number of clicks in the composition has " & minWordClick & " clicks," _
+
+                                & " and the word with the lowest conversion rate has a conversion rate of " & Format(estCR, "0.00%") & "."
+
+                        ElseIf estACOS > decreaseBidLv Then
+
+                            adviceTitle = titleDecreaseBid
+
+                            adviceText = textDecreaseBid + " CPC can be decreased to " + Format(targetCPC, "0.00") + " to reach EST ACOS: " + Format(targetAcos, "0.00%") + " on this ST with EST CR: " + Format(estCR, "0.00%") + " and ASP " + Format(totalASP, "0.00") + ", or adjust bid accordingly." + " Please DO NOT decrease bid so quick, advice -0.1/0.2 daily/weekly until CPC and ACOS are more reasonable."
+
+                            confidenceData = Format(1 - ((1 - totalConversion) ^ minWordClick), "0.00%")
+
+                            confidenceText = confidenceData & " confidence, this search term tends to have a conversion rate of " & Format(estCR, "0.00%") & " " _
+
+                                & "when there is sufficient data. The reason is that the word with the lowest number of clicks in the composition has " & minWordClick & " clicks," _
+
+                                & " and the word with the lowest conversion rate has a conversion rate of " & Format(estCR, "0.00%") & "."
+
+                        Else
+
+                            adviceTitle = titleReasonable
+
+                            adviceText = textPendingNotAdviceChange + " EST ACOS: " + Format(estACOS, "0.00%") + " on this ST with EST CR: " + Format(estCR, "0.00%") + " and ASP " + Format(totalASP, "0.00")
+
+                            confidenceData = Format(1 - ((1 - totalConversion) ^ minWordClick), "0.00%")
+
+                            confidenceText = confidenceData & " confidence, this search term tends to have a conversion rate of " & Format(estCR, "0.00%") & " " _
+
+                                & "when there is sufficient data. The reason is that the word with the lowest number of clicks in the composition has " & minWordClick & " clicks," _
+
+                                & " and the word with the lowest conversion rate has a conversion rate of " & Format(estCR, "0.00%") & "."
+
+                        End If
+
+                    Else
+
+                        adviceTitle = titlePending
+
+                        adviceText = textPendingNoNegativeZeroOrder & " Zero order keyword: " & noNegatvieZeroOrderKeyword & " with " & noNegativeZeroOrderWordMaxClick & " clicks and 0 order."
+
+                        confidenceData = Format(1 - ((1 - totalConversion) ^ noNegativeZeroOrderWordMaxClick), "0.00%")
+
+                        confidenceText = confidenceData & "confidence in offering optimization suggestions, even though some word(s) has 0 conversion rate, " _
+
+                            & "the word(" & noNegatvieZeroOrderKeyword & ") with clicks has only " & noNegativeZeroOrderWordMaxClick & " clicks, therefore, no direct optimization suggestions are provided."
+
+                    End If
+
+                End If
+
+                'output analysis result
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 1).Value = adviceTitle
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 2).Value = adviceText
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 3).Value = confidenceData
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 4).Value = confidenceText
+
+                'set cell color
+
+                Select Case adviceTitle
+
+                    Case titlePending
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(128, 128, 128)
+
+                    Case titleReasonable
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(128, 128, 128)
+
+                    Case titleExactNegative
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(255, 153, 0)
+
+                    Case titlePhraseNegative
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(255, 0, 0)
+
+                    Case titleIncreaseBid
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(0, 176, 80)
+
+                    Case titleDecreaseBid
+
+                        Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(255, 192, 0)
+
+                End Select
+
+                Sheets("Opti_Advice").Range(Cells(currentSTReportRow + 1, ReportColumnCount + 1), Cells(currentSTReportRow + 1, ReportColumnCount + 2)).Font.Bold = True
+
+            Else
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 1).Value = "Advice_Title"
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 2).Value = "Advice_Text"
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 3).Value = "Confidence"
+
+                Sheets("Opti_Advice").Cells(currentSTReportRow + 1, ReportColumnCount + 4).Value = "Confidence_Text"
+
+                Sheets("Opti_Advice").Range(Cells(2, 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Bold = True
+
+                Sheets("Opti_Advice").Range(Cells(2, 1), Cells(currentSTReportRow + 1, ReportColumnCount + 4)).Font.Color = RGB(0, 0, 0)
+
+            End If
+
+            'update progress
+
+            synRowCount = 3
+
+            If (currentSTReportRow - 2) Mod synRowCount = 0 Then
+
+                Sheets("Opti_Advice").Range("D1").Value = (currentSTReportRow - 2) & " / " & (ReportRowCount - 1) & " Lines"
+
+                curentTime = Time
+
+                Sheets("Opti_Advice").Range("F1").Value = (curentTime - startTime) * (ReportRowCount - currentSTReportRow) / (currentSTReportRow)
+
+            End If
+
+        Next currentSTReportRow
+
+
+
+        'Msg result info
+
+        Sheets("Opti_Advice").Range("B1").Value = "Task_Done"
+
+        Sheets("Opti_Advice").Range("B1").Font.Color = RGB(0, 176, 80)
+
+        Sheets("Opti_Advice").Range("D1").Value = (currentSTReportRow - 2) & " Lines / " & (ReportRowCount - 1) & " Lines"
+
+        curentTime = Time
+
+        Sheets("Opti_Advice").Range("E1").Value = "Time_Cost: "
+
+        costTime = curentTime - startTime
+
+        Sheets("Opti_Advice").Range("F1").Value = costTime
+
+        Sheets("Opti_Advice").Range("I1").Value = totalClicks
+
+        Sheets("Opti_Advice").Range("J1").Value = totalOrders
+
+        Sheets("Opti_Advice").Range("K1").Value = totalSpend
+
+        Sheets("Opti_Advice").Range("L1").Value = totalSales
+
+        Sheets("Opti_Advice").Range("M1").Value = totalConversion
+
+        Sheets("Opti_Advice").Range("N1").Value = totalAcos
+
+        Sheets("Opti_Advice").Range("O1").Value = totalASP
+
+        Sheets("Opti_Advice").Range("I1").NumberFormat = """Clicks: "" #,##0"
+
+        Sheets("Opti_Advice").Range("J1").NumberFormat = """Orders: "" #,##0"
+
+        Sheets("Opti_Advice").Range("K1").NumberFormat = """Spend: "" #,##0.00"
+
+        Sheets("Opti_Advice").Range("L1").NumberFormat = """Sales: "" #,##0.00"
+
+        Sheets("Opti_Advice").Range("M1").NumberFormat = """CR: "" 0.00%"
+
+        Sheets("Opti_Advice").Range("N1").NumberFormat = """ACOS: "" 0.00%"
+
+        Sheets("Opti_Advice").Range("O1").NumberFormat = """ASP: "" #,##0.00"
+
+        With Sheets("Opti_Advice").Range("I1:O1")
+
+            .Interior.Color = RGB(255, 153, 0)
+
+            .Font.Color = RGB(255, 255, 255)
+
+            .Font.Bold = True
+
+            .HorizontalAlignment = xlCenter
+
+            .VerticalAlignment = xlCenter
+
+            .WrapText = False
+
+            .Orientation = 0
+
+            .AddIndent = False
+
+            .IndentLevel = 0
+
+            .ShrinkToFit = False
+
+            .ReadingOrder = xlContext
+
+            .MergeCells = False
+
+        End With
+
+
+
+        Sheets("Opti_Advice").Select
+
+        Sheets("Opti_Advice").Range("A1").Select
+
+        ActiveSheet.Shapes.AddTextbox(msoTextOrientationHorizontal, 20, 20, 520, 520).Select
+
+        Selection.ShapeRange(1).TextFrame2.TextRange.Characters.Text = _
+
+            "[Information]" & Chr(13) _
+
+            & "Time Cost: " & Chr(9) & Chr(9) & Format(costTime, "h"":""mm"":""ss") & Chr(13) _
+
+            & "Total Clicks: " & Chr(9) & Chr(9) & Format(totalClicks, "#,##0") & Chr(13) _
+
+            & "Total Orders: " & Chr(9) & Chr(9) & Format(totalOrders, "#,##0") & Chr(13) _
+
+            & "Total Spend: " & Chr(9) & Chr(9) & Format(totalSpend, "#,##0.00") & Chr(13) _
+
+            & "Total Sales: " & Chr(9) & Chr(9) & Format(totalSales, "#,##0.00") & Chr(13) _
+
+            & "Total CR: " & Chr(9) & Chr(9) & Format(totalConversion, "0.00%") & Chr(13) _
+
+            & "Total ACOS: " & Chr(9) & Chr(9) & Format(totalAcos, "0.00%") & Chr(13) _
+
+            & "Total ASP: " & Chr(9) & Chr(9) & Format(totalASP, "#,##0.00") & Chr(13) _
+
+            & Chr(13) & "[Benchmark Used in This Run]" & Chr(13) _
+
+            & "Target ACOS: " & Format(targetAcos, "#,##0.00%") & Chr(13) _
+
+            & "Advice Exact Negative when some word(s) has clicks > " & Format(exactNegativeLv, "#,##0.0") & " and 0 order" & Chr(13) _
+
+            & "Advice Phrase Negative when some word(s) has clicks > " & Format(phraseNegativeLv, "#,##0.0") & " and 0 order" & Chr(13) _
+
+            & "Advice review by relevance when some word(s) has clicks < " & Format(reliability, "#,##0.0") & Chr(13) _
+
+            & "Advice increase bid only when estimate ACOS < " & Format(increaseBidLv, "#,##0.00%") & Chr(13) _
+
+            & "Advice decrease bid only when estimate ACOS > " & Format(decreaseBidLv, "#,##0.00%") & Chr(13) _
+
+            & Chr(13) _
+
+            & "You can import Campaign Name/Group Name and any other info you need to ST_Report Sheet, the result will certainly come with them, and this will not change the advice provided.]" & Chr(13) _
+
+            & Chr(13) _
+
+            & "Find more tools and courses: " & vbCrLf & "https://gs.amazon.cn/service/education.(Amazon Official Website)" & Chr(13) _
+
+            & Chr(13) _
+
+            & "This tool is developed only by: benshz@amazon.com" & Chr(13) _
+
+            & Chr(13) _
+
+            & "Manually detele this text box will not clear any existing data."
+
+
+
+        With Selection.ShapeRange(1).TextFrame2.TextRange.Characters.ParagraphFormat
+
+            .SpaceWithin = 1.2
+
+            .FirstLineIndent = 0
+
+        End With
+
+        With Selection.ShapeRange(1).TextFrame2.TextRange.Characters.Font
+
+            .Bold = msoTrue
+
+            .NameComplexScript = "+mn-cs"
+
+            .NameFarEast = "+mn-ea"
+
+            .Fill.Visible = msoTrue
+
+            .Fill.Transparency = 0
+
+            .Fill.Solid
+
+            .Size = 12
+
+            .Name = "+mn-lt"
+
+        End With
+
+        With Selection.ShapeRange(1).TextFrame2.TextRange.Characters(1, 14).Font
+
+            .Bold = msoTrue
+
+            .NameComplexScript = "+mn-cs"
+
+            .NameFarEast = "+mn-ea"
+
+            .Fill.Visible = msoTrue
+
+            .Fill.ForeColor.RGB = RGB(255, 153, 0)
+
+            .Fill.Transparency = 0
+
+            .Fill.Solid
+
+            .Size = 14
+
+            .Name = "+mn-lt"
+
+        End With
+
+        With Selection.ShapeRange.Line
+
+            .Visible = msoTrue
+
+            .ForeColor.RGB = RGB(255, 153, 0)
+
+            .Transparency = 0
+
+            .Weight = 3
+
+        End With
+
+        With Selection.ShapeRange.TextFrame2
+
+            .MarginLeft = 9
+
+            .MarginRight = 9
+
+            .MarginTop = 6
+
+            .MarginBottom = 6
+
+        End With
+
+        If MsgBox("Analysis Task Done" & vbCrLf _
+
+            & "Time_Cost: " & Format(costTime, "h"":""mm"":""ss") & vbCrLf _
+
+            & vbCrLf _
+
+            & "Click [Yes] to keep the [Information] text box." & vbCrLf _
+
+            & "Click [No] to delete the [Information] text box.", vbYesNo, "Result") = vbNo Then
+
+            Selection.Delete
+
+        End If
+
+        'add filter
+
+        Sheets("Opti_Advice").Range(Cells(2, 1), Cells(2, ReportColumnCount + 4)).Select
+
+        Selection.AutoFilter
+
+        Sheets("Opti_Advice").Range("A1").Select
+
+    End Sub
+
+
+
+    Sub reset()
+
+        'Confirm to clear all data
+
+        If MsgBox("This action will clear all data in all sheets." & vbCrLf & "Click [Yes] to clear all data，click [No] to cancel.", vbYesNo) = vbNo Then Exit Sub
+
+
+
+        'clear ST_Report & Split_Words sheets
+
+        Dim RowCount As Long
+
+        Dim ColumnCount As Integer
+
+        RowCount = Sheets("ST_Report").Range("A1").CurrentRegion.Rows.Count
+
+        ColumnCount = Sheets("ST_Report").Range("A1").CurrentRegion.Columns.Count
+
+        Sheets("ST_Report").Select
+
+        Sheets("ST_Report").Range("A1").Select
+
+        Sheets("ST_Report").Range(Cells(2, 1), Cells(RowCount, ColumnCount)).Clear
+
+        RowCount = Sheets("Split_Words").Range("A1").CurrentRegion.Rows.Count
+
+        ColumnCount = Sheets("Split_Words").Range("A1").CurrentRegion.Columns.Count
+
+        Sheets("Split_Words").Select
+
+        Sheets("Split_Words").Range("A1").Select
+
+        Sheets("Split_Words").Range(Cells(2, 1), Cells(RowCount, ColumnCount)).Clear
+
+
+
+        'reset result sheet content
+
+        Sheets("Opti_Advice").Select
+
+        Sheets("Opti_Advice").Range("A1").Select
+
+        Sheets("Opti_Advice").Range("B1").Value = "No_Task"
+
+        Sheets("Opti_Advice").Range("B1").Font.Color = RGB(112, 48, 160)
+
+        Sheets("Opti_Advice").Range("D1").Value = "-"
+
+        Sheets("Opti_Advice").Range("E1").Value = "Time_Remaining: "
+
+        Sheets("Opti_Advice").Range("F1").Value = "No_Task"
+
+        'clear result sheet
+
+        tempRowCheckCount = Sheets("Opti_Advice").Range("A2").CurrentRegion.Rows.Count
+
+        tempColumnCheckCount = Sheets("Opti_Advice").Range("A2").CurrentRegion.Columns.Count
+
+        If tempRowCheckCount > 1 And tempColumnCheckCount > 0 Then
+
+            Sheets("Opti_Advice").Range(Cells(2, 1), Cells(tempRowCheckCount, tempColumnCheckCount)).Clear
+
+        End If
+
+        Sheets("Opti_Advice").Range(Cells(1, 9), Cells(1, 15)).Clear
+
+        'reset cell format
+
+        'Sheets("Opti_Advice").Range("A:A").NumberFormatLocal = "@"
+
+        'return to data sheet
+
+        'Sheets("ST_Report").Select
+
+        'Sheets("ST_Report").Range("A1").Select
+
+    End Sub
+
+
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet1.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet1'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Module.bas
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Module'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Sheet6.cls
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Sheet6'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(empty macro)
+
+-------------------------------------------------------------------------------
+
+VBA MACRO Checker.vba
+
+in file: xl/vbaProject.bin - OLE stream: 'VBA/Checker'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Sub CheckCharacters()
+
+    Dim testString As String
+
+    Dim i As Integer
+
+    Dim position As Integer
+
+    Dim character As String
+
+
+
+    testString = "クリック広告費総売上高合計注文数総注文"
+
+    'testString = "ド"
+
+    'testString = "プ"
+
+    testString = Replace(testString, "ド", "")
+
+    testString = Replace(testString, "プ", "")
+
+
+
+    For i = 1 To Len(testString)
+
+        character = Mid(testString, i, 1)
+
+        Debug.Print character
+
+        position = InStr(1, character, character, 1)
+
+    Next i
+
+End Sub
